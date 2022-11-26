@@ -4,7 +4,6 @@ attrs==22.1.0
 beautifulsoup4==4.11.1
 blinker==1.5
 brotlipy==0.7.0
-bs4==0.0.1
 cachetools==5.2.0
 certifi @ file:///C:/b/abs_ac29jvt43w/croot/certifi_1665076682579/work/certifi
 cffi @ file:///C:/Windows/Temp/abs_6808y9x40v/croots/recipe/cffi_1659598653989/work
