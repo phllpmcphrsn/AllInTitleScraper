@@ -7,7 +7,6 @@ import streamlit as st
 from bs4 import BeautifulSoup
 
 def extract_keywords(filename) -> list:
-# filename = 'resources\\input\\allintitle.xlsx'
     keyword_df = pd.DataFrame()
     
     # add logging?
