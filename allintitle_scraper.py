@@ -43,10 +43,9 @@ def format_cells(kgr):
 # setup request
 with st.echo(code_location='below'):
     uploaded_file = st.file_uploader(
-        "",
+        "uploader",
         key="1",
         help="To activate 'wide mode', go to the hamburger menu > Settings > turn on 'wide mode'",
-        label="uploader"
     )
     if uploaded_file is not None:
         file_container = st.expander("Check your uploaded .csv")
