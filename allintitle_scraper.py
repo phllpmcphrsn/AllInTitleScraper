@@ -28,6 +28,7 @@ def extract_keywords(file) -> list:
     try:
         keyword_df.columns = keyword_df.columns.str.lower()
         print(keyword_df.columns)
+        log.info(keyword_df.columns)
         return keyword_df["keyword"].tolist() 
     except KeyError:
         print('Column not found: "keyword"')
