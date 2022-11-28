@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import random
 import streamlit as st
+import logging as log
 
 from bs4 import BeautifulSoup
 
@@ -16,13 +17,17 @@ def extract_keywords(file) -> list:
         elif '.xlsx' in file:
             keyword_df = pd.read_excel(file)
     except FileNotFoundError as f:
-        print("File not found. Please check that the file exists in the resources/input directory :: ", f)
+        print('File not found. Please check that the file exists in the resources/input directory :: ', f)
+        log.error('File not found. Please check that the file exists in the resources/input directory :: %s', f)
         return
     except:
         print('Unknown error occurred')
+        log.error('Unknown error occurred')
+        return
 
     try:
         keyword_df.columns = keyword_df.columns.str.lower()
+        print(keyword_df.columns)
         return keyword_df["keyword"].tolist() 
     except KeyError:
         print('Column not found: "keyword"')
