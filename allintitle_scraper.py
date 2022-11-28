@@ -6,27 +6,27 @@ import streamlit as st
 
 from bs4 import BeautifulSoup
 
-def extract_keywords(filename) -> list:
+def extract_keywords(file) -> list:
     keyword_df = pd.DataFrame()
     
     # add logging?
     try:
-        if '.csv' in filename:
-            keyword_df = pd.read_csv(filename)
-        elif '.xlsx' in filename:
-            keyword_df = pd.read_excel(filename)
+        if '.csv' in file:
+            keyword_df = pd.read_csv(file)
+        elif '.xlsx' in file:
+            keyword_df = pd.read_excel(file)
     except FileNotFoundError as f:
-        print("File not found. Please check that the file exists in the resources/input directory :: ")
+        print("File not found. Please check that the file exists in the resources/input directory :: ", f)
         return
     except:
         print('Unknown error occurred')
 
     try:
         keyword_df.columns = keyword_df.columns.str.lower()
+        return keyword_df["keyword"].tolist() 
     except KeyError:
         print('Column not found: "keyword"')
         return
-    return keyword_df["keyword"].tolist() 
 
 def format_cells(kgr):
     # conditional formatting of kgr column (Series)
@@ -44,16 +44,17 @@ def format_cells(kgr):
 with st.echo(code_location='below'):
     uploaded_file = st.file_uploader(
         "uploader",
+        type=['xlsx', 'csv'],
         key="1",
         help="To activate 'wide mode', go to the hamburger menu > Settings > turn on 'wide mode'",
     )
     if uploaded_file is not None:
-        file_container = st.expander("Check your uploaded .csv")
+        file_container = st.expander("Check your uploaded .csv or .xlsx")
         keywords = extract_keywords(uploaded_file)
         uploaded_file.seek(0)
         file_container.write(keywords)
     else:
-        st.info(f"""👆 Upload a .csv file first.""")
+        st.info(f"""👆 Upload a .csv or .xlsx file first.""")
         st.stop()
         
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
