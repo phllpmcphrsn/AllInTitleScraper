@@ -34,7 +34,7 @@ def extract_keywords(file) -> list:
         print('Column not found: "keyword"')
         return
 
-def format_cells(kgr):
+def format_cells(kgr) -> str:
     # conditional formatting of kgr column (Series)
     color = ''
     if kgr < 0.25:
@@ -45,26 +45,9 @@ def format_cells(kgr):
         color = 'background-color: red'
     return color
 
-# main
-# setup request
-with st.echo(code_location='below'):
-    uploaded_file = st.file_uploader(
-        "uploader",
-        type=['xlsx', 'csv'],
-        key="1",
-        help="To activate 'wide mode', go to the hamburger menu > Settings > turn on 'wide mode'",
-    )
-    if uploaded_file is not None:
-        file_container = st.expander("Check your uploaded .csv or .xlsx")
-        keywords = extract_keywords(uploaded_file)
-        uploaded_file.seek(0)
-        file_container.write(keywords)
-    else:
-        st.info(f"""👆 Upload a .csv or .xlsx file first.""")
-        st.stop()
-        
+def create_df(keywords: list) -> pd.DataFrame:
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
-    stats = []
+    # stats = []
     exported_df = pd.DataFrame({'Keyword': [], 'All In Title': [], 'Search Volume': [], 'KGR': []})
 
     for i in keywords:
@@ -93,4 +76,24 @@ with st.echo(code_location='below'):
         time.sleep(1)
         
     exported_df.style.applymap(format_cells, subset=['KGR']).to_excel('resources\\output\\allintitle.xlsx', index=False, engine='openpyxl')
-    st.table(exported_df)
+    return exported_df
+
+# main
+# setup request
+with st.echo(code_location='below'):
+    uploaded_file = st.file_uploader(
+        "uploader",
+        type=['xlsx', 'csv'],
+        key="1",
+        help="To activate 'wide mode', go to the hamburger menu > Settings > turn on 'wide mode'",
+    )
+    if uploaded_file is not None:
+        file_container = st.expander("Check your uploaded .csv or .xlsx")
+        keywords = extract_keywords(uploaded_file)
+        uploaded_file.seek(0)
+        file_container.write(keywords)
+    else:
+        st.info(f"""👆 Upload a .csv or .xlsx file first.""")
+        st.stop()
+        
+    st.table(create_df(keywords))
