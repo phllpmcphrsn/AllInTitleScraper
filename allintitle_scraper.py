@@ -14,8 +14,10 @@ def extract_keywords(file) -> list:
     try:
         if '.csv' in file:
             keyword_df = pd.read_csv(file)
+            log.info(f'Keyword Dataframe: {keyword_df}')
         elif '.xlsx' in file:
             keyword_df = pd.read_excel(file)
+            log.info(f'Keyword Dataframe: {keyword_df}')
     except FileNotFoundError as f:
         print('File not found. Please check that the file exists in the resources/input directory :: ', f)
         log.error('File not found. Please check that the file exists in the resources/input directory :: %s', f)
@@ -43,9 +45,11 @@ def format_cells(kgr) -> str:
         color = 'background-color: yellow'
     else:
         color = 'background-color: red'
+    log.debug(f'Color chosen: {color}')
     return color
 
 def create_df(keywords: list) -> pd.DataFrame:
+    log.debug(f'Keywords received: {keywords}')
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
     # stats = []
     exported_df = pd.DataFrame({'Keyword': [], 'All In Title': [], 'Search Volume': [], 'KGR': []})
@@ -90,10 +94,13 @@ with st.echo(code_location='below'):
     if uploaded_file is not None:
         file_container = st.expander("Check your uploaded .csv or .xlsx")
         keywords = extract_keywords(uploaded_file)
+        if keywords is None:
+            log.error(f'Keywords are empty')
+            
         uploaded_file.seek(0)
         file_container.write(keywords)
     else:
         st.info(f"""👆 Upload a .csv or .xlsx file first.""")
         st.stop()
-        
+    
     st.table(create_df(keywords))
