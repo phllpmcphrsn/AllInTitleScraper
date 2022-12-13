@@ -9,13 +9,13 @@ from bs4 import BeautifulSoup
 
 def extract_keywords(file) -> list:
     keyword_df = pd.DataFrame()
-    
+    log.info(f'Filename: {file.name}')
     # add logging?
     try:
         if '.csv' in file.name:
             keyword_df = pd.read_csv(file)
             log.info(f'Keyword Dataframe: {keyword_df}')
-        elif '.xlsx' in file:
+        elif '.xlsx' in file.name:
             keyword_df = pd.read_excel(file)
             log.info(f'Keyword Dataframe: {keyword_df}')
     except FileNotFoundError as f:
