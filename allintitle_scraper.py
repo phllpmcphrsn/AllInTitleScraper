@@ -97,6 +97,7 @@ with st.echo(code_location='below'):
         keywords = extract_keywords(uploaded_file)
         if keywords is None:
             log.error(f'Keywords are empty')
+            st.stop()
             
         uploaded_file.seek(0)
         file_container.write(keywords)
@@ -104,4 +105,4 @@ with st.echo(code_location='below'):
         st.info(f"""👆 Upload a .csv or .xlsx file first.""")
         st.stop()
     
-    st.table(create_df(keywords))
+    st.dataframe(create_df(keywords))
