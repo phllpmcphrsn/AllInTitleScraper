@@ -12,7 +12,7 @@ def extract_keywords(file) -> list:
     
     # add logging?
     try:
-        if '.csv' in file:
+        if '.csv' in file.name:
             keyword_df = pd.read_csv(file)
             log.info(f'Keyword Dataframe: {keyword_df}')
         elif '.xlsx' in file:
@@ -49,7 +49,7 @@ def format_cells(kgr) -> str:
     return color
 
 def create_df(keywords: list) -> pd.DataFrame:
-    log.debug(f'Keywords received: {keywords}')
+    log.info(f'Keywords received: {keywords}')
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
     # stats = []
     exported_df = pd.DataFrame({'Keyword': [], 'All In Title': [], 'Search Volume': [], 'KGR': []})
@@ -90,6 +90,7 @@ with st.echo(code_location='below'):
         type=['xlsx', 'csv'],
         key="1",
         help="To activate 'wide mode', go to the hamburger menu > Settings > turn on 'wide mode'",
+        accept_multiple_files=False
     )
     if uploaded_file is not None:
         file_container = st.expander("Check your uploaded .csv or .xlsx")
