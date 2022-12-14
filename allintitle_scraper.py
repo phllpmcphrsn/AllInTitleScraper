@@ -78,9 +78,9 @@ def create_df(keywords: list) -> pd.DataFrame:
         exported_df.loc[len(exported_df.index)] = [i, num_of_results, volume, kgr]
         # stats[i] = [int(num_of_results.replace(',','')), ]
         time.sleep(1)
-        
+    
     exported_df.style.applymap(format_cells, subset=['KGR']).to_excel('resources\\output\\allintitle.xlsx', index=False, engine='openpyxl')
-    return exported_df
+    return exported_df.style
 
 # main
 # setup request
