@@ -9,15 +9,15 @@ from bs4 import BeautifulSoup
 
 def extract_keywords(file) -> list:
     keyword_df = pd.DataFrame()
-    log.info(f'Filename: {file.name}')
+    log.debug(f'Filename: {file.name}')
     # add logging?
     try:
         if '.csv' in file.name:
             keyword_df = pd.read_csv(file)
-            log.info(f'Keyword Dataframe: {keyword_df}')
+            log.debug(f'Keyword Dataframe: {keyword_df}')
         elif '.xlsx' in file.name:
             keyword_df = pd.read_excel(file)
-            log.info(f'Keyword Dataframe: {keyword_df}')
+            log.debug(f'Keyword Dataframe: {keyword_df}')
     except FileNotFoundError as f:
         print('File not found. Please check that the file exists in the resources/input directory :: ', f)
         log.error('File not found. Please check that the file exists in the resources/input directory :: %s', f)
@@ -29,11 +29,10 @@ def extract_keywords(file) -> list:
 
     try:
         keyword_df.columns = keyword_df.columns.str.lower()
-        print(keyword_df.columns)
-        log.info(keyword_df.columns)
         return keyword_df["keyword"].tolist() 
     except KeyError:
         print('Column not found: "keyword"')
+        log.error('Column not found: "keyword"')
         return
 
 def format_cells(kgr) -> str:
@@ -79,8 +78,9 @@ def create_df(keywords: list) -> pd.DataFrame:
         # stats[i] = [int(num_of_results.replace(',','')), ]
         time.sleep(1)
     
-    exported_df.style.applymap(format_cells, subset=['KGR']).to_excel('resources\\output\\allintitle.xlsx', index=False, engine='openpyxl')
-    return exported_df.style
+    # exported_df.style.applymap(format_cells, subset=['KGR']).to_excel('resources\\output\\allintitle.xlsx', index=False, engine='openpyxl')
+    exported_df.style.applymap(format_cells, subset=['KGR'])
+    return exported_df
 
 # main
 # setup request
@@ -105,4 +105,5 @@ with st.echo(code_location='below'):
         st.info(f"""👆 Upload a .csv or .xlsx file first.""")
         st.stop()
     
-    st.dataframe(create_df(keywords))
+    df = create_df(keywords)
+    st.dataframe(df)
