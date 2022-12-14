@@ -79,7 +79,7 @@ def create_df(keywords: list) -> pd.DataFrame:
         time.sleep(1)
     
     # exported_df.style.applymap(format_cells, subset=['KGR']).to_excel('resources\\output\\allintitle.xlsx', index=False, engine='openpyxl')
-    exported_df.style.applymap(format_cells, subset=['KGR'])
+    # exported_df.style.applymap(format_cells, subset=['KGR'])
     return exported_df
 
 # main
@@ -106,4 +106,4 @@ with st.echo(code_location='below'):
         st.stop()
     
     df = create_df(keywords)
-    st.dataframe(df.style)
+    st.dataframe(df.style.applymap(format_cells, subset=['KGR']))
