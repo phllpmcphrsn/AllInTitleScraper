@@ -106,4 +106,4 @@ with st.echo(code_location='below'):
         st.stop()
     
     df = create_df(keywords)
-    st.dataframe(df)
+    st.dataframe(df.style)
