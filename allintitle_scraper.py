@@ -51,7 +51,7 @@ def create_df(keywords: list) -> pd.DataFrame:
     log.info(f'Keywords received: {keywords}')
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
     # stats = []
-    exported_df = pd.DataFrame({'Keyword': [], 'All In Title': [], 'Search Volume': [], 'KGR': []})
+    df = pd.DataFrame({'Keyword': [], 'All In Title': [], 'Search Volume': [], 'KGR': []})
 
     for i in keywords:
         search_phrase = 'allintitle:' + i
@@ -74,15 +74,17 @@ def create_df(keywords: list) -> pd.DataFrame:
         # adding a random number for volume
         volume = random.randrange(1,2)
         kgr = round(int(num_of_results)/volume, 2)
-        exported_df.loc[len(exported_df.index)] = [i, num_of_results, volume, kgr]
+        df.loc[len(df.index)] = [i, num_of_results, volume, kgr]
         # stats[i] = [int(num_of_results.replace(',','')), ]
         time.sleep(1)
-    
-    # exported_df.style.applymap(format_cells, subset=['KGR']).to_excel('resources\\output\\allintitle.xlsx', index=False, engine='openpyxl')
-    # exported_df.style.applymap(format_cells, subset=['KGR'])
-    return exported_df
 
-# main
+    return df
+
+@st.cache
+def convert_df(df: pd.DataFrame):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_excel().encode('utf-8')
+
 # setup request
 with st.echo(code_location='below'):
     uploaded_file = st.file_uploader(
@@ -106,4 +108,13 @@ with st.echo(code_location='below'):
         st.stop()
     
     df = create_df(keywords)
+    converted_df = convert_df(df)
+
+    st.download_button(
+        label="Download data as XLSX",
+        data=converted_df,
+        file_name='allintitle.xlsx',
+        mime='application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet',
+    )
     st.dataframe(df.style.applymap(format_cells, subset=['KGR']))
+    
