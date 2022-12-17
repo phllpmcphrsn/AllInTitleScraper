@@ -1,7 +1,9 @@
 import time
 import requests
-import pandas as pd
 import random
+import xlsxwriter
+
+import pandas as pd
 import streamlit as st
 import logging as log
 
@@ -83,7 +85,7 @@ def create_df(keywords: list) -> pd.DataFrame:
 @st.cache
 def convert_df(df: pd.DataFrame):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return df.to_excel().encode('utf-8')
+    return df.to_excel(index=False).encode('utf-8')
 
 # setup request
 with st.echo(code_location='below'):
