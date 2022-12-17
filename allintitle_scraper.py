@@ -83,9 +83,10 @@ def create_df(keywords: list) -> pd.DataFrame:
     return df
 
 @st.cache
-def convert_df(df: pd.DataFrame):
+def convert_df(df: pd.DataFrame, filename: str) -> pd.DataFrame:
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return df.to_excel(excel_writer='xlsxwriter', index=False).encode('utf-8')
+    writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+    return df.to_excel(writer, index=False).encode('utf-8')
 
 # setup request
 with st.echo(code_location='below'):
@@ -110,12 +111,13 @@ with st.echo(code_location='below'):
         st.stop()
     
     df = create_df(keywords)
-    converted_df = convert_df(df)
+    output_file = 'allintitle_results.xlsx'
+    converted_df = convert_df(df, output_file)
 
     st.download_button(
         label="Download data as XLSX",
         data=converted_df,
-        file_name='allintitle.xlsx',
+        file_name=output_file,
         mime='application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet',
     )
     st.dataframe(df.style.applymap(format_cells, subset=['KGR']))
