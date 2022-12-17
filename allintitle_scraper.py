@@ -86,7 +86,7 @@ def create_df(keywords: list) -> pd.DataFrame:
 def convert_df(df: pd.DataFrame, filename: str) -> pd.DataFrame:
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     writer = pd.ExcelWriter(filename, engine='xlsxwriter')
-    return df.to_excel(writer, index=False).encode('utf-8')
+    return df.to_excel(writer, index=False)
 
 # setup request
 with st.echo(code_location='below'):
