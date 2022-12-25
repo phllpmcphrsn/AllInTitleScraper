@@ -1,12 +1,14 @@
 import time
 import requests
 import random
+import xlsxwriter
 
 import pandas as pd
 import streamlit as st
 import logging as log
 
 from bs4 import BeautifulSoup
+from io import BytesIO
 
 
 def extract_keywords(file) -> list:
@@ -90,13 +92,16 @@ def create_df(keywords: list) -> pd.DataFrame:
 
 
 @st.cache
-def convert_df(df: pd.DataFrame, filename: str) -> pd.DataFrame:
+def convert_df(df: pd.DataFrame, filename: str) -> BytesIO:
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    writer = pd.ExcelWriter(filename, engine='xlsxwriter')
-    return df.to_excel(writer, index=False)
+    # Write files to in-memory strings using BytesIO
+    output = BytesIO()
+    # writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+    workbook.close()
+    return output
 
 
-# setup request
 with st.echo(code_location='below'):
     uploaded_file = st.file_uploader(
         "uploader",
@@ -120,11 +125,12 @@ with st.echo(code_location='below'):
            
     df = create_df(keywords)
     output_file = 'allintitle_results.xlsx'
-    converted_df = convert_df(df, output_file)
+    # converted_df = convert_df(df, output_file)
+    output = convert_df(df, output_file)
 
     st.download_button(
-        label="Download data as XLSX",
-        data=converted_df,
+        label="Download as XLSX",
+        data=output.getvalue(),
         file_name=output_file,
         mime='application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet'
     )
